@@ -4,12 +4,12 @@ A tiny .NET library do inter-process communication (IPC) between different proce
 
 ## Background
 
-First trying ZeroMQ to do some very small IPC between two processes on one machine, I failed and didn't 
+First trying [ZeroMQ](https://github.com/zeromq/netmq) to do some very small IPC between two processes on one machine, I failed and didn't 
 bother to dig deeper. Instead I used the phantastic [C# WebServer project](https://webserver.codeplex.com/) and quickly
 assembled some small wrapper.
 
 I intentionally implemented simple string send and receive methods, everything else is out of scope of
-the library. E.g. one coulud use JSON.NET to transfer JSON within the strings between the client and the
+the library. E.g. you could use [Json.NET](http://james.newtonking.com/json) to transfer JSON within the strings between the client and the
 server.
 
 ## Using the server
