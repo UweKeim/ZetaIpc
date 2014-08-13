@@ -4,7 +4,7 @@ A tiny .NET library do inter-process communication (IPC) between different proce
 
 ## Background
 
-First trying ZeroMQ do do some very small IPC between two processes on one machine, I failed and didn't 
+First trying ZeroMQ to do some very small IPC between two processes on one machine, I failed and didn't 
 bother to dig deeper. Instead I used the phantastic [C# WebServer project](https://webserver.codeplex.com/) and quickly
 assembled some small wrapper.
 
