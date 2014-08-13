@@ -50,3 +50,4 @@ To use the client (i.e. the "thing" that can send texts to the server), do somet
 ## Notes
 
 - The web server is included inside the ZetaIpc.dll, no need to ship additional DLLs.
+- Also available as a [NuGet package](https://www.nuget.org/packages/ZetaIpc).
