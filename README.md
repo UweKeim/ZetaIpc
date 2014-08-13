@@ -1,4 +1,4 @@
-# Zeta Long Paths
+# Zeta IPC
 
 A tiny .NET library do inter-process communication (IPC) between different processes on one machine.
 
