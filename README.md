@@ -50,8 +50,8 @@ To use the client (i.e. the "thing" that can send texts to the server), do somet
 ## Other usages
 
 If you want a bi-directional communication between the server and client that can be started
-by both the client and the server, simply use the above code of the server on the client, too
-and the code of the client, on the server (use different ports, of course).
+by both the client and the server, simply use the above code of the server on the client
+and the code of the client on the server (use different ports, of course).
 
 This gives you two applications, each of them being server and client at the same time.
 
