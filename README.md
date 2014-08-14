@@ -1,10 +1,10 @@
 # Zeta IPC
 
-A tiny .NET library do inter-process communication (IPC) between different processes on one machine.
+A tiny .NET library to do inter-process communication (IPC) between different processes on the same machine.
 
 ## Background
 
-First trying [ZeroMQ](https://github.com/zeromq/netmq) to do some very small IPC between two processes on one machine, I failed and didn't 
+First trying [ZeroMQ](https://github.com/zeromq/netmq) to do some very small IPC between two processes on the same machine, I failed and didn't 
 bother to dig deeper. Instead I used the phantastic [C# WebServer project](https://webserver.codeplex.com/) and quickly
 assembled some small wrapper.
 
