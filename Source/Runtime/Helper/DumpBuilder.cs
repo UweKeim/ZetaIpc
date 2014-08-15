@@ -2,286 +2,31 @@
 {
     using System;
     using System.Collections;
-    using System.Collections.Generic;
-    using System.Data;
-    using System.Linq;
     using System.Reflection;
     using System.Text;
 
     /// <summary>
     /// Class that helps in dumping.
     /// </summary>
-    internal sealed class DumpBuilder
+    internal static class DumpBuilder
     {
         private static readonly string[] EscapeChars =
         {
-            "\r", "\n", "\t", @"""", @"'", @"\"
+            //"\r", "\n", "\t", @"""", @"'", @"\"
         };
 
         private static readonly string[] EscapeCharReplacements =
         {
-            @"\r", @"\n", @"\t", @"\""", @"\'", @"\\"
+            //@"\r", @"\n", @"\t", @"\""", @"\'", @"\\"
         };
 
-        private readonly int _indentLevel;
-        private readonly List<string> _lines = new List<string>();
-
-        public DumpBuilder()
-            : this(0, false, null)
-        {
-        }
-
-        public DumpBuilder(
-            int indentLevel)
-            : this(indentLevel, false, null)
-        {
-        }
-
-        public DumpBuilder(
-            int indentLevel,
-            bool deep)
-            : this(indentLevel, deep, null)
-        {
-        }
-
-        public DumpBuilder(
-            int indentLevel,
-            bool deep,
-            Type typeToDump)
-        {
-            _indentLevel = indentLevel;
-            IsDeep = deep;
-
-            if (typeToDump != null)
-            {
-                var s = string.Format(
-                    @"Dumping for '{0}':",
-                    typeToDump.FullName);
-
-                _lines.Add(s);
-            }
-        }
-
-        public bool IsDeep { get; private set; }
-
-        public DumpBuilder AddLine(
-            string name,
-            object value)
-        {
-            _lines.Add(makeStringToAdd(name, value));
-            return this;
-        }
-
-        public DumpBuilder AddLine(
-            string text)
-        {
-            _lines.Add(text);
-            return this;
-        }
-
-        public DumpBuilder InsertLine(
-            int index,
-            string name,
-            object value)
-        {
-            _lines.Insert(index, makeStringToAdd(name, value));
-            return this;
-        }
-
-        public DumpBuilder InsertLine(
-            int index,
-            string text)
-        {
-            _lines.Insert(index, text);
-            return this;
-        }
-
-        /// <summary>
-        /// Get the dumped content.
-        /// </summary>
-        public override string ToString()
-        {
-            var sb = new StringBuilder();
-
-            foreach (var line in _lines.Where(line => !string.IsNullOrEmpty(line)))
-            {
-                sb.AppendLine(doIndent(line.TrimEnd()));
-            }
-
-            return sb.ToString().TrimEnd();
-        }
-
-        public static string Dump(
-            DataTable table)
-        {
-            if (table == null || table.Rows == null || table.Rows.Count == 0)
-            {
-                return string.Empty;
-            }
-            else
-            {
-                var sb = new StringBuilder();
-
-                sb.AppendFormat(
-                    @"====={0}",
-                    Environment.NewLine);
-
-                sb.AppendFormat(
-                    @"Table '{0}'{1}",
-                    table.TableName,
-                    Environment.NewLine);
-                sb.AppendFormat(
-                    @"{0} rows{1}",
-                    table.Rows.Count,
-                    Environment.NewLine);
-
-                sb.AppendFormat(
-                    @"{0}",
-                    Environment.NewLine);
-
-                var rowIndex = 0;
-                foreach (DataRow row in table.Rows)
-                {
-                    sb.AppendFormat(
-                        @"Row {0}:{1}{2}{3}",
-                        rowIndex + 1,
-                        Environment.NewLine,
-                        Dump(row),
-                        Environment.NewLine);
-
-                    rowIndex++;
-                }
-
-                sb.AppendFormat(
-                    @"====={0}",
-                    Environment.NewLine);
-
-                return sb.ToString().Trim();
-            }
-        }
-
-        public static string Dump(
-            DataRow row)
-        {
-            if (
-                row == null ||
-                row.Table == null ||
-                row.Table.Columns.Count <= 0)
-            {
-                return string.Empty;
-            }
-            else
-            {
-                var sb = new StringBuilder();
-
-                sb.AppendFormat(
-                    @"-----{0}",
-                    Environment.NewLine);
-
-                var index = 0;
-                foreach (DataColumn column in row.Table.Columns)
-                {
-                    if (index > 0)
-                    {
-                        sb.AppendFormat(
-                            @",{0}",
-                            Environment.NewLine);
-                    }
-
-                    var o =
-                        row.HasVersion(DataRowVersion.Original)
-                            ? row[column, DataRowVersion.Original]
-                            : row.HasVersion(DataRowVersion.Original)
-                                ? row[column, DataRowVersion.Default]
-                                : row[column];
-
-                    if (o == null || o == DBNull.Value)
-                    {
-                        sb.AppendFormat(
-                            @"[{0}] = null",
-                            column.ColumnName);
-                    }
-                    else
-                    {
-                        sb.AppendFormat(
-                            @"[{0}] = '{1}' ({2})",
-                            column.ColumnName,
-                            o,
-                            o.GetType());
-                    }
-
-                    index++;
-                }
-
-                sb.AppendFormat(
-                    @"{0}-----",
-                    Environment.NewLine);
-
-                return sb.ToString().Trim();
-            }
-        }
-
-        public static string Dump(
-            Exception x)
-        {
-            return Dump(x, true);
-        }
-
         public static string Dump(
             Exception x,
-            bool deep)
-        {
-            return Dump(x, 0, deep);
-        }
-
-        public static string Dump(
-            Exception x,
-            int indent)
-        {
-            return Dump(x, indent, true);
-        }
-
-        public static string Dump(
-            Exception x,
-            int indent,
-            bool deep)
+            int indent=0,
+            bool deep = true)
         {
             var sb = new StringBuilder();
             reflect(sb, x, indent, deep);
-
-            return sb.ToString();
-        }
-
-        /// <summary>
-        /// Dumps an arbitrary object.
-        /// </summary>
-        public static string Dump(
-            object obj)
-        {
-            return Dump(obj, true);
-        }
-
-        public static string Dump(
-            object obj,
-            bool deep)
-        {
-            return Dump(obj, 0, deep);
-        }
-
-        public static string Dump(
-            object obj,
-            int indent)
-        {
-            return Dump(obj, indent, true);
-        }
-
-        public static string Dump(
-            object obj,
-            int indent,
-            bool deep)
-        {
-            var sb = new StringBuilder();
-            reflect(sb, obj, indent, deep);
 
             return sb.ToString();
         }
@@ -438,9 +183,6 @@
                                     if (list != null)
                                     {
                                         sb.Append(Environment.NewLine);
-                                        //sb.Append( '\t', indent );
-                                        //sb.Append( @"[" );
-                                        //sb.Append( Environment.NewLine );
                                         for (var i = 0; i < list.Count; i++)
                                         {
                                             reflect(sb, new GraphRef(obj, list[i], null), childIndent, deep,
@@ -451,9 +193,6 @@
                                             }
                                             sb.Append(Environment.NewLine);
                                         }
-                                        //sb.Append( '\t', indent );
-                                        //sb.Append( @"]" );
-                                        //sb.Append( Environment.NewLine );
                                     }
 
                                     sb.Append('\t', indent);
@@ -483,42 +222,6 @@
                 sb.Replace(EscapeChars[i], EscapeCharReplacements[i]);
             }
             return sb.ToString();
-        }
-
-        private static string makeStringToAdd(
-            string name,
-            object value)
-        {
-            if (name == null)
-            {
-                throw new ArgumentNullException(@"name");
-            }
-            else if (name.Length <= 0)
-            {
-                throw new ArgumentException(@"name");
-            }
-            else
-            {
-                var result = string.Empty;
-
-                result += string.Format(
-                    @"{0}: '{1}'",
-                    name,
-                    value == null ? @"(null)" : value.ToString());
-
-                return result;
-            }
-        }
-
-        private string doIndent(
-            string text)
-        {
-            var result = new StringBuilder();
-
-            result.Append('\t', _indentLevel);
-            result.Append(text.TrimEnd());
-
-            return result.ToString();
         }
 
         private class GraphRef

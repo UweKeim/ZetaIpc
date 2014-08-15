@@ -12,7 +12,7 @@
         {
             Trace.WriteLine(
                 string.Format(
-                    @"[Preview web server, {0}] {1}",
+                    @"[Web server, {0}] {1}",
                     type,
                     message));
         }

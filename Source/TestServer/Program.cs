@@ -19,7 +19,7 @@
                 args.Response = "Super: " + args.Request;
                 args.Handled = true;
 
-                throw new Exception("Test");
+                //throw new Exception("Test");
             };
 
             while (true)
