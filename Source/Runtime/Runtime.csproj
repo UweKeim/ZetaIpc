@@ -35,9 +35,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Client\IpcClient.cs" />
+    <Compile Include="Client\IpcClientException.cs" />
     <Compile Include="Client\MyWebClient.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Helper\DumpBuilder.cs" />
+    <Compile Include="Helper\ExceptionFromXmlLight.cs" />
+    <Compile Include="Helper\ExceptionToXmlLight.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Server\IpcServer.cs" />
     <Compile Include="Server\MyFormDecoder.cs" />

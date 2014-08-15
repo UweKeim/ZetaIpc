@@ -18,6 +18,8 @@
                 Console.WriteLine("Received: " + args.Request);
                 args.Response = "Super: " + args.Request;
                 args.Handled = true;
+
+                throw new Exception("Test");
             };
 
             while (true)

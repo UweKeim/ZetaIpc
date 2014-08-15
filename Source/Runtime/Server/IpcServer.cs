@@ -9,6 +9,7 @@
     using System.Net.Sockets;
     using System.Reflection;
     using System.Text;
+    using Helper;
     using HttpServer;
 
     /// <summary>
@@ -88,6 +89,15 @@
         /// <summary>
         /// Being called when the server receives a string.
         /// </summary>
+        /// <remarks>
+        /// This event is called from within a background thread (also
+        /// called "worker thread"), i.e. a non-UI thread. If you are handling
+        /// the event within a WinForms or WPF application and want to update
+        /// UI stuff (e.g. write a text to a text box or show a message box),
+        /// you have to use Control.Invoke or Control.BeginInvoke to marshall
+        /// your call to the foreground thread since WinForms/WPF controls can
+        /// be accessed only from within the main UI thread.
+        /// </remarks>
         public event EventHandler<ReceivedRequestEventArgs> ReceivedRequest;
 
         protected virtual string OnReceivedRequest(string request)
@@ -187,45 +197,79 @@
             //if (!string.IsNullOrEmpty(text))
             {
                 var requestText = getText(request);
-                var responseText = OnReceivedRequest(requestText);
+                string responseText;
 
-                response.ContentType = @"text/html";
-
-                if (!string.IsNullOrEmpty(request.Headers[@"if-Modified-Since"]))
+                try
                 {
-#pragma warning disable 162
-                    response.Status = HttpStatusCode.OK;
-#pragma warning restore 162
+                    responseText = OnReceivedRequest(requestText);
+                }
+                catch (Exception x)
+                {
+                    Trace.TraceError(@"Error during request handling: {0}", x);
+                    sendError500(response, x);
+                    throw;
                 }
 
-                addNeverCache(response);
-
-                if (request.Method != @"Headers" && response.Status != HttpStatusCode.NotModified)
-                {
-                    Trace.WriteLine(
-                        string.Format(
-                            @"[Web server] Sending text for URL '{0}': '{1}'.",
-                            request.Uri.AbsolutePath,
-                            responseText));
-
-                    var buffer2 = getBytesWithBom(responseText);
-
-                    response.ContentLength = buffer2.Length;
-                    response.SendHeaders();
-
-                    response.SendBody(buffer2, 0, buffer2.Length);
-                }
-                else
-                {
-                    response.ContentLength = 0;
-                    response.SendHeaders();
-
-                    Trace.WriteLine(@"[Web server] Not sending.");
-                }
+                sendReply(request, response, responseText);
             }
         }
 
-        private string getText(IHttpRequest request)
+        private void sendReply(IHttpRequest request, IHttpResponse response, string responseText)
+        {
+            response.ContentType = @"text/html";
+
+            if (!string.IsNullOrEmpty(request.Headers[@"if-Modified-Since"]))
+            {
+                response.Status = HttpStatusCode.OK;
+            }
+
+            addNeverCache(response);
+
+            if (request.Method != @"Headers" && response.Status != HttpStatusCode.NotModified)
+            {
+                Trace.WriteLine(
+                    string.Format(
+                        @"[Web server] Sending text for URL '{0}': '{1}'.",
+                        request.Uri.AbsolutePath,
+                        responseText));
+
+                var buffer2 = getBytesWithBom(responseText);
+
+                response.ContentLength = buffer2.Length;
+                response.SendHeaders();
+
+                response.SendBody(buffer2, 0, buffer2.Length);
+            }
+            else
+            {
+                response.ContentLength = 0;
+                response.SendHeaders();
+
+                Trace.WriteLine(@"[Web server] Not sending.");
+            }
+
+        }
+
+        private void sendError500(IHttpResponse response, Exception exception)
+        {
+            response.ContentType = @"text/html";
+            response.Status = HttpStatusCode.InternalServerError;
+
+            var responseText = makeError500ResponseText(exception);
+            var buffer2 = getBytesWithBom(responseText);
+
+            response.ContentLength = buffer2.Length;
+            response.SendHeaders();
+
+            response.SendBody(buffer2, 0, buffer2.Length);
+        }
+
+        private static string makeError500ResponseText(Exception exception)
+        {
+            return new ExceptionToXmlLight(exception).ToXmlString();
+        }
+
+        private static string getText(IHttpRequest request)
         {
             var bytes = request.GetBody();
             if (bytes == null) return string.Empty;

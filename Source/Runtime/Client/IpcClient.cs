@@ -1,5 +1,10 @@
 ﻿namespace ZetaIpc.Runtime.Client
 {
+    using System.IO;
+    using System.Net;
+    using System.Text;
+    using Helper;
+
     /// <summary>
     /// Simple HTTP-based client to send strings to an IpcServer instance and 
     /// get back strings in response.
@@ -25,7 +30,39 @@
         {
             using (var wc = new MyWebClient())
             {
-                return wc.UploadString(url, @"POST", request ?? string.Empty);
+                try
+                {
+                    return wc.UploadString(url, @"POST", request ?? string.Empty);
+                }
+                catch (WebException x)
+                {
+                    // Try to give user more details (which might have been
+                    // marshalled from the server).
+
+                    if (x.Status == WebExceptionStatus.ProtocolError)
+                    {
+                        var response = x.Response as HttpWebResponse;
+                        if (response != null && response.StatusCode == HttpStatusCode.InternalServerError)
+                        {
+                            using (var stream = response.GetResponseStream())
+                            {
+                                if (stream != null)
+                                {
+                                    using (var reader = new StreamReader(stream, Encoding.UTF8))
+                                    {
+                                        var resp = reader.ReadToEnd();
+                                        if (ExceptionFromXmlLight.IsSerializedException(resp))
+                                        {
+                                            throw new IpcClientException(new ExceptionFromXmlLight(resp), x);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    throw;
+                }
             }
         }
 
