@@ -1,10 +1,11 @@
 #################
-## Zeta Long Paths - project specific.
+## Zeta IPC - project specific.
 #################
 
 .svn/
 Deploy/
 
+Bin/HttpServer.dll
 Source/TestClient/Bin/
 Source/TestServer/Bin/
 Source/UnitTests/Bin/
