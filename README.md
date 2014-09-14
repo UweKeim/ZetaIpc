@@ -47,13 +47,27 @@ To use the client (i.e. the "thing" that can send texts to the server), do somet
     var rep = c.Send("Hello");
     Console.WriteLine("Received: " + rep);
 
-## Other usages
+## Bi-directional usage
 
 If you want a bi-directional communication between the server and client that can be started
 by both the client and the server, simply use the above code of the server on the client
 and the code of the client on the server (use different ports, of course).
 
 This gives you two applications, each of them being server and client at the same time.
+
+## How to tell the client the port?
+
+I've developed the library to start an external application from my main application. My main application acts as 
+the client and my external application as the server. 
+
+The whole process of starting and communicating with the external application roughly follows these steps:
+
+1. Main application is running.
+1. User clicks a menu item, which requires to launch the external application.
+1. By calling the `FreePortHelper.GetFreePort()` method on the main application, a free port number is being gathered.
+1. The main application calls the external application (through a relative file path) and passes the free port number as a command line parameter.
+1. The external application reads the so passed port number and starts an instance of `IpcServer` on this given port.
+1. The main application waits for a few seconds and then uses an instance of `IpcClient` to send messages to the external application and receives messages back.
 
 ## Notes
 

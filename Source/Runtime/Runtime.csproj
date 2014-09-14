@@ -42,6 +42,7 @@
     <Compile Include="Helper\DumpBuilder.cs" />
     <Compile Include="Helper\ExceptionFromXmlLight.cs" />
     <Compile Include="Helper\ExceptionToXmlLight.cs" />
+    <Compile Include="Helper\FreePortHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Server\IpcServer.cs" />
     <Compile Include="Server\MyFormDecoder.cs" />

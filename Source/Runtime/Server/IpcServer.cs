@@ -1,11 +1,8 @@
 ﻿namespace ZetaIpc.Runtime.Server
 {
     using System;
-    using System.Collections.Generic;
     using System.Diagnostics;
-    using System.Linq;
     using System.Net;
-    using System.Net.NetworkInformation;
     using System.Net.Sockets;
     using System.Reflection;
     using System.Text;
@@ -18,8 +15,6 @@
     /// </summary>
     public class IpcServer
     {
-        private static readonly Random Random = new Random(Guid.NewGuid().GetHashCode());
-        private static readonly List<int> ReservedPorts = new List<int>();
         private string _localHost;
         private HttpServer _server;
 
@@ -56,7 +51,7 @@
             if (_server != null) throw new Exception("Server already initialized.");
 
             Address = getLocalHost();
-            Port = port <= 0 ? getFreePort() : port;
+            Port = port <= 0 ? FreePortHelper.GetFreePort() : port;
 
             _server = new HttpServer(new MyLogWriter());
 
@@ -153,38 +148,6 @@
             return _localHost;
         }
 
-        private static int getFreePort()
-        {
-            for (var i = 0; i < 10; ++i)
-            {
-                var port = Random.Next(9000, 15000);
-                if (isPortFree(port))
-                {
-                    ReservedPorts.Add(port);
-                    return port;
-                }
-            }
-
-            throw new Exception("Unable to acquire free port.");
-        }
-
-        private static bool isPortFree(int port)
-        {
-            if (ReservedPorts.Contains(port))
-            {
-                return false;
-            }
-            else
-            {
-                // http://stackoverflow.com/a/570126/107625
-
-                var globalProperties = IPGlobalProperties.GetIPGlobalProperties();
-                var informations = globalProperties.GetActiveTcpListeners();
-
-                return informations.All(information => information.Port != port);
-            }
-        }
-
         private static byte[] getBytesWithBom(string text)
         {
             return Encoding.UTF8.GetBytes(text);
@@ -250,7 +213,7 @@
 
         }
 
-        private void sendError500(IHttpResponse response, Exception exception)
+        private static void sendError500(IHttpResponse response, Exception exception)
         {
             response.ContentType = @"text/html";
             response.Status = HttpStatusCode.InternalServerError;
