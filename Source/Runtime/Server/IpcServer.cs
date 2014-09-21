@@ -13,7 +13,8 @@
     /// Simple HTTP-based server to receive strings from the IpcClient and send back
     /// strings in response.
     /// </summary>
-    public class IpcServer
+    public class IpcServer :
+        IDisposable
     {
         private string _localHost;
         private HttpServer _server;
@@ -253,6 +254,11 @@
             response.AddHeader(@"Connection", @"Keep-Alive");
             response.SendHeaders();
             response.SendBody(Encoding.UTF8.GetBytes(string.Empty));
+        }
+
+        void IDisposable.Dispose()
+        {
+            Stop();
         }
     }
 }
