@@ -67,7 +67,7 @@ The whole process of starting and communicating with the external application ro
 1. By calling the `FreePortHelper.GetFreePort()` method on the main application, a free port number is being gathered.
 1. The main application calls the external application (through a relative file path) and passes the free port number as a command line parameter.
 1. The external application reads the so passed port number and starts an instance of `IpcServer` on this given port.
-1. The main application waits for a few seconds and then uses an instance of `IpcClient` to send messages to the external application and receives messages back.
+1. The main application waits for a few seconds and then uses an instance of `IpcClient` to send messages to the external application and receives messages back. If you want to wait until the server has really started and is ready, you can [use an event wait handle](http://stackoverflow.com/questions/2740038/).
 
 ## Notes
 
