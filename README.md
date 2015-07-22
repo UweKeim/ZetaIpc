@@ -1,4 +1,4 @@
-E# Zeta IPC
+# Zeta IPC
 
 A tiny .NET library to do inter-process communication (IPC) between different processes on the same machine.
 
