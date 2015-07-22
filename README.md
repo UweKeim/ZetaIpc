@@ -1,4 +1,4 @@
-# Zeta IPC
+E# Zeta IPC
 
 A tiny .NET library to do inter-process communication (IPC) between different processes on the same machine.
 
@@ -75,4 +75,4 @@ The whole process of starting and communicating with the external application ro
 
 - The web server is included inside the ZetaIpc.dll, no need to ship additional DLLs.
 - Also available as a [NuGet package](https://www.nuget.org/packages/ZetaIpc).
-- I'm using this library in our [Test and Requirments Management application](http://www.zeta-test.com).
+- I'm using this library in our [Test and Requirements Management application](http://www.zeta-test.com).
