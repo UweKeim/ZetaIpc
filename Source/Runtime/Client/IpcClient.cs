@@ -30,6 +30,7 @@
         {
             using (var wc = new MyWebClient())
             {
+                wc.Encoding = Encoding.UTF8;
                 try
                 {
                     return wc.UploadString(url, @"POST", request ?? string.Empty);
