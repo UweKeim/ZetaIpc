@@ -1,18 +1,20 @@
 ﻿namespace ZetaIpc.Runtime.Server
 {
+    using Helper;
+    using HttpServer;
     using System;
     using System.Diagnostics;
     using System.Net;
     using System.Net.Sockets;
     using System.Reflection;
     using System.Text;
-    using Helper;
-    using HttpServer;
 
     /// <summary>
     /// Simple HTTP-based server to receive strings from the IpcClient and send back
     /// strings in response.
     /// </summary>
+    // ReSharper disable once InheritdocConsiderUsage
+    // ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
     public class IpcServer :
         IDisposable
     {
@@ -25,9 +27,7 @@
                 (sender, args) =>
                 {
                     var resourceName =
-                        string.Format(
-                            @"ZetaIpc.Runtime.EmbeddedResources.{0}.dll",
-                            new AssemblyName(args.Name).Name);
+                        $@"ZetaIpc.Runtime.EmbeddedResources.{new AssemblyName(args.Name).Name}.dll";
 
                     using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName))
                     {
@@ -42,6 +42,8 @@
         }
 
         private string Address { get; set; }
+
+        // ReSharper disable once MemberCanBePrivate.Global
         public int Port { get; set; }
 
         /// <summary>
@@ -57,16 +59,14 @@
             _server = new HttpServer(new MyLogWriter());
 
             _server.ExceptionThrown +=
-                (source, exception) => { throw new Exception("Error during server processing.", exception); };
+                (source, exception) => throw new Exception("Error during server processing.", exception);
 
             _server.FormDecoderProviders.Add(new MyFormDecoder());
             _server.Add(new MyModule(this));
             _server.Start(IPAddress.Loopback, Port);
 
             Trace.WriteLine(
-                string.Format(
-                    @"[Web server] Started local web server for URL '{0}'.",
-                    baseUrl));
+                $@"[Web server] Started local web server for URL '{baseUrl}'.");
         }
 
         /// <summary>
@@ -110,10 +110,7 @@
             return null;
         }
 
-        private string baseUrl
-        {
-            get { return string.Format(@"http://{0}:{1}/", Address, Port); }
-        }
+        private string baseUrl => $@"http://{Address}:{Port}/";
 
         private string getLocalHost()
         {
@@ -151,35 +148,33 @@
 
         private static byte[] getBytesWithBom(string text)
         {
-            return Encoding.UTF8.GetBytes(text);
+            return Encoding.UTF8.GetBytes(text ?? string.Empty);
         }
 
         internal void CheckSendText(
             IHttpRequest request,
             IHttpResponse response)
         {
-            //if (!string.IsNullOrEmpty(text))
+            var requestText = getText(request);
+            string responseText;
+
+            try
             {
-                var requestText = getText(request);
-                string responseText;
-
-                try
-                {
-                    responseText = OnReceivedRequest(requestText);
-                }
-                catch (Exception x)
-                {
-                    Trace.TraceError(@"Error during request handling: {0}", x);
-                    sendError500(response, x);
-                    throw;
-                }
-
-                sendReply(request, response, responseText);
+                responseText = OnReceivedRequest(requestText);
             }
+            catch (Exception x)
+            {
+                Trace.TraceError(@"Error during request handling: {0}", x);
+                sendError500(response, x);
+                throw;
+            }
+
+            sendReply(request, response, responseText);
         }
 
         private void sendReply(IHttpRequest request, IHttpResponse response, string responseText)
         {
+            responseText = responseText ?? string.Empty;
             response.ContentType = @"text/html";
 
             if (!string.IsNullOrEmpty(request.Headers[@"if-Modified-Since"]))
@@ -192,10 +187,7 @@
             if (request.Method != @"Headers" && response.Status != HttpStatusCode.NotModified)
             {
                 Trace.WriteLine(
-                    string.Format(
-                        @"[Web server] Sending text for URL '{0}': '{1}'.",
-                        request.Uri.AbsolutePath,
-                        responseText));
+                    $@"[Web server] Sending text for URL '{request.Uri.AbsolutePath}': '{responseText}'.");
 
                 var buffer2 = getBytesWithBom(responseText);
 
@@ -211,7 +203,6 @@
 
                 Trace.WriteLine(@"[Web server] Not sending.");
             }
-
         }
 
         private static void sendError500(IHttpResponse response, Exception exception)
@@ -236,8 +227,7 @@
         private static string getText(IHttpRequest request)
         {
             var bytes = request.GetBody();
-            if (bytes == null) return string.Empty;
-            return Encoding.UTF8.GetString(bytes);
+            return bytes == null ? string.Empty : Encoding.UTF8.GetString(bytes);
         }
 
         private static void addNeverCache(IHttpResponse response)
@@ -248,6 +238,8 @@
             response.AddHeader(@"Pragma", @"no-cache");
         }
 
+        // ReSharper disable once UnusedMember.Global
+        // ReSharper disable once UnusedParameter.Global
         public void SendKeepAliveReply(IHttpRequest request, IHttpResponse response)
         {
             response.Status = HttpStatusCode.OK;

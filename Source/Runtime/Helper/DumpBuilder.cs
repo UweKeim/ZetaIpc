@@ -22,7 +22,7 @@
 
         public static string Dump(
             Exception x,
-            int indent=0,
+            int indent = 0,
             bool deep = true)
         {
             var sb = new StringBuilder();
@@ -66,7 +66,7 @@
             sb.Append('\t', indent);
 
             //Output property name if applicable
-            if (!String.IsNullOrEmpty(obj.PropName))
+            if (!string.IsNullOrEmpty(obj.PropName))
             {
                 sb.Append(obj.PropName);
                 sb.Append(@"=");
@@ -82,20 +82,18 @@
             //If value is a string, output value with quotes around it
             else
             {
-                var s = obj.Value as string;
-                if (s != null)
+                if (obj.Value is string s)
                 {
                     sb.AppendFormat(@"""{0}""", escape(s));
                 }
                 //If value is a char, output value with single quotes around it
                 else if (obj.Value is char)
                 {
-                    sb.AppendFormat(@"'{0}'", escape(new String((char)obj.Value, 1)));
+                    sb.AppendFormat(@"'{0}'", escape(new string((char)obj.Value, 1)));
                 }
                 else
                 {
-                    var value = obj.Value as IDictionary;
-                    if (value != null)
+                    if (obj.Value is IDictionary value)
                     {
                         var list = value;
                         sb.Append(Environment.NewLine);
@@ -179,8 +177,7 @@
                                     }
 
                                     //If IList, output all the values in the list
-                                    var list = obj.Value as IList;
-                                    if (list != null)
+                                    if (obj.Value is IList list)
                                     {
                                         sb.Append(Environment.NewLine);
                                         for (var i = 0; i < list.Count; i++)
@@ -236,9 +233,9 @@
                 PropName = propName;
             }
 
-            public object Value { get; private set; }
-            public GraphRef Parent { get; private set; }
-            public string PropName { get; private set; }
+            public object Value { get; }
+            public GraphRef Parent { get; }
+            public string PropName { get; }
         }
     }
 }

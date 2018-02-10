@@ -3,7 +3,7 @@
     using System;
     using System.Net;
 
-    internal class MyWebClient : 
+    internal class MyWebClient :
         WebClient
     {
         protected override WebRequest GetWebRequest(Uri address)
@@ -12,8 +12,7 @@
 
             var request = base.GetWebRequest(address);
 
-            var r = request as HttpWebRequest;
-            if (r != null) r.KeepAlive = false;
+            if (request is HttpWebRequest r) r.KeepAlive = false;
             return request;
         }
     }

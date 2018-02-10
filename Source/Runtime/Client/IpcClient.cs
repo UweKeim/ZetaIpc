@@ -1,9 +1,9 @@
 ﻿namespace ZetaIpc.Runtime.Client
 {
+    using Helper;
     using System.IO;
     using System.Net;
     using System.Text;
-    using Helper;
 
     /// <summary>
     /// Simple HTTP-based client to send strings to an IpcServer instance and 
@@ -30,7 +30,6 @@
         {
             using (var wc = new MyWebClient())
             {
-                wc.Encoding = Encoding.UTF8;
                 try
                 {
                     return wc.UploadString(url, @"POST", request ?? string.Empty);
@@ -42,8 +41,8 @@
 
                     if (x.Status == WebExceptionStatus.ProtocolError)
                     {
-                        var response = x.Response as HttpWebResponse;
-                        if (response != null && response.StatusCode == HttpStatusCode.InternalServerError)
+                        if (x.Response is HttpWebResponse response &&
+                            response.StatusCode == HttpStatusCode.InternalServerError)
                         {
                             using (var stream = response.GetResponseStream())
                             {
@@ -67,9 +66,6 @@
             }
         }
 
-        private string url
-        {
-            get { return string.Format(@"http://127.0.0.1:{0}", _port); }
-        }
+        private string url => $@"http://127.0.0.1:{_port}";
     }
 }

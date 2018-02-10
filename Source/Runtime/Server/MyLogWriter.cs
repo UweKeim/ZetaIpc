@@ -1,7 +1,7 @@
 ﻿namespace ZetaIpc.Runtime.Server
 {
-    using System.Diagnostics;
     using HttpServer;
+    using System.Diagnostics;
 
     internal class MyLogWriter :
         ILogWriter
@@ -10,11 +10,7 @@
             string type,
             string message)
         {
-            Trace.WriteLine(
-                string.Format(
-                    @"[Web server, {0}] {1}",
-                    type,
-                    message));
+            Trace.WriteLine($@"[Web server, {type}] {message}");
         }
 
         public void Write(object source, LogPrio priority, string message)

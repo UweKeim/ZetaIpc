@@ -1,13 +1,13 @@
 ﻿namespace ZetaIpc.Runtime.Client
 {
-    using System;
     using Helper;
+    using System;
 
     [Serializable]
     public sealed class IpcClientException :
         Exception
     {
-        private ExceptionFromXmlLight _h;
+        private readonly ExceptionFromXmlLight _h;
 
         internal IpcClientException(ExceptionFromXmlLight h, Exception inner) :
             base(h.Message, inner)
@@ -17,24 +17,12 @@
             Source = h.Source;
         }
 
-        public override string Message
-        {
-            get { return _h.Message; }
-        }
+        public override string Message => _h.Message;
 
-        public override string StackTrace
-        {
-            get { return _h.StackTrace; }
-        }
+        public override string StackTrace => _h.StackTrace;
 
-        public string Dump
-        {
-            get { return _h.Dump; }
-        }
+        public string Dump => _h.Dump;
 
-        public string Type
-        {
-            get { return _h.Type; }
-        }
+        public string Type => _h.Type;
     }
 }

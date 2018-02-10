@@ -9,6 +9,9 @@ Bin/HttpServer.dll
 Source/TestClient/Bin/
 Source/TestServer/Bin/
 Source/UnitTests/Bin/
+Source/build-all.cmd
+Source/do-build-all.cs
+Source/do-build-all.log
 
 #################
 ## Eclipse
