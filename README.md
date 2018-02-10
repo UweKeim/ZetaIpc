@@ -4,6 +4,10 @@ A tiny .NET library to do inter-process communication (IPC) between different pr
 
 [![Build state](https://travis-ci.org/UweKeim/ZetaIpc.svg?branch=master)](https://travis-ci.org/UweKeim/ZetaIpc "Travis CI build status")
 
+## NuGet
+
+Get the [NuGet package](https://www.nuget.org/packages/ZetaIpc).
+
 ## Background
 
 First trying [ZeroMQ](https://github.com/zeromq/netmq) to do some very small IPC between two WinForms processes on the same machine, I failed and didn't 
