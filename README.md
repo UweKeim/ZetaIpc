@@ -6,7 +6,7 @@ A tiny .NET library to do inter-process communication (IPC) between different pr
 
 ## NuGet
 
-Get the [NuGet package](https://www.nuget.org/packages/ZetaIpc).
+Get the [`ZetaIpc` NuGet package](https://www.nuget.org/packages/ZetaIpc).
 
 ## Background
 
