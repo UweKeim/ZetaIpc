@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Runtime", "..\..\..\z\Runtime\Runtime.csproj", "{1D14DBEB-4FE8-48E2-B564-5813E279CEB0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Runtime", "Runtime\Runtime.csproj", "{1D14DBEB-4FE8-48E2-B564-5813E279CEB0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestClient", "..\..\..\z\TestClient\TestClient.csproj", "{63F26545-3EE9-4AC4-88C3-DDB5C047C122}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestClient", "TestClient\TestClient.csproj", "{63F26545-3EE9-4AC4-88C3-DDB5C047C122}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestServer", "..\..\..\z\TestServer\TestServer.csproj", "{489DFAAB-CB5F-48C1-A498-8C955AB30FC2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestServer", "TestServer\TestServer.csproj", "{489DFAAB-CB5F-48C1-A498-8C955AB30FC2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
