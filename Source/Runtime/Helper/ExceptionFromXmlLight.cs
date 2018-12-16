@@ -1,7 +1,7 @@
-﻿namespace ZetaIpc.Runtime.Helper
-{
-    using System.Xml;
+using System.Xml;
 
+namespace ZetaIpc.Runtime.Helper
+{
     internal sealed class ExceptionFromXmlLight
     {
         public static bool IsSerializedException(string raw)

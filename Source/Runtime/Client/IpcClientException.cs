@@ -1,8 +1,8 @@
-﻿namespace ZetaIpc.Runtime.Client
-{
-    using Helper;
-    using System;
+using System;
+using ZetaIpc.Runtime.Helper;
 
+namespace ZetaIpc.Runtime.Client
+{
     [Serializable]
     public sealed class IpcClientException :
         Exception

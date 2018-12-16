@@ -1,28 +1,23 @@
-﻿namespace ZetaIpc.Runtime.Server
-{
-    using HttpServer;
-    using HttpServer.HttpModules;
-    using HttpServer.Sessions;
+using HttpServer;
+using HttpServer.HttpModules;
+using HttpServer.Sessions;
 
-    internal class MyModule :
-        HttpModule
+namespace ZetaIpc.Runtime.Server
+{
+    public class MyModule : HttpModule
     {
         private readonly IpcServer _owner;
-
+        
         public MyModule(IpcServer owner)
         {
             _owner = owner;
         }
-
-        public override bool Process(
-            IHttpRequest request,
-            IHttpResponse response,
-            IHttpSession session)
+        
+        public override bool Process(IHttpRequest request, IHttpResponse response, IHttpSession session)
         {
             if (request.Connection == ConnectionType.KeepAlive)
             {
-                // Don't want to handle it by myself, give another 
-                // tool the chance to do so.
+                //Comment Author: Don't want to handle it by myself, give another tool the chance to do so.   
                 return false;
             }
             else
