@@ -1,10 +1,10 @@
-﻿namespace ZetaIpc.Runtime.Client
-{
-    using Helper;
-    using System.IO;
-    using System.Net;
-    using System.Text;
+using System.IO;
+using System.Net;
+using System.Text;
+using ZetaIpc.Runtime.Helper;
 
+namespace ZetaIpc.Runtime.Client
+{
     /// <summary>
     /// Simple HTTP-based client to send strings to an IpcServer instance and 
     /// get back strings in response.

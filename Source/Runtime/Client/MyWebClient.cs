@@ -1,10 +1,9 @@
-﻿namespace ZetaIpc.Runtime.Client
-{
-    using System;
-    using System.Net;
+using System;
+using System.Net;
 
-    internal class MyWebClient :
-        WebClient
+namespace ZetaIpc.Runtime.Client
+{
+    public class MyWebClient : WebClient
     {
         protected override WebRequest GetWebRequest(Uri address)
         {
@@ -14,6 +13,6 @@
 
             if (request is HttpWebRequest r) r.KeepAlive = false;
             return request;
-        }
+        }    
     }
 }

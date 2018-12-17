@@ -1,19 +1,19 @@
+using System.IO;
+using System.Text;
+using HttpServer;
+using HttpServer.FormDecoders;
+
 namespace ZetaIpc.Runtime.Server
 {
-    using HttpServer;
-    using HttpServer.FormDecoders;
-    using System.IO;
-    using System.Text;
-
     public class MyFormDecoder : IFormDecoder
     {
-        HttpForm IFormDecoder.Decode(Stream stream, string contentType, Encoding encoding)
+        public HttpForm Decode(Stream stream, string contentType, Encoding encoding)
         {
-            var form = new HttpForm();
+            HttpForm form = new HttpForm();
             return form;
         }
 
-        bool IFormDecoder.CanParse(string contentType)
+        public bool CanParse(string contentType)
         {
             return true;
         }

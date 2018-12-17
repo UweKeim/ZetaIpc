@@ -1,10 +1,10 @@
-﻿namespace ZetaIpc.Runtime.Helper
-{
-    using System;
-    using System.Collections;
-    using System.Reflection;
-    using System.Text;
+using System;
+using System.Collections;
+using System.Reflection;
+using System.Text;
 
+namespace ZetaIpc.Runtime.Helper
+{
     /// <summary>
     /// Class that helps in dumping.
     /// </summary>
@@ -59,6 +59,7 @@
                     {
                         return;
                     }
+
                     parentRef = parentRef.Parent;
                 }
             }
@@ -89,7 +90,7 @@
                 //If value is a char, output value with single quotes around it
                 else if (obj.Value is char)
                 {
-                    sb.AppendFormat(@"'{0}'", escape(new string((char)obj.Value, 1)));
+                    sb.AppendFormat(@"'{0}'", escape(new string((char) obj.Value, 1)));
                 }
                 else
                 {
@@ -168,10 +169,12 @@
                                                 sb.Append(e.GetType().Name);
                                                 sb.Append(@")>");
                                             }
+
                                             if (i < props.Length - 1)
                                             {
                                                 sb.Append(',');
                                             }
+
                                             sb.Append(Environment.NewLine);
                                         }
                                     }
@@ -188,6 +191,7 @@
                                             {
                                                 sb.Append(',');
                                             }
+
                                             sb.Append(Environment.NewLine);
                                         }
                                     }
@@ -218,6 +222,7 @@
             {
                 sb.Replace(EscapeChars[i], EscapeCharReplacements[i]);
             }
+
             return sb.ToString();
         }
 
