@@ -1,8 +1,8 @@
-using System;
-using System.Xml;
-
-namespace ZetaIpc.Runtime.Helper
+﻿namespace ZetaIpc.Runtime.Helper
 {
+    using System;
+    using System.Xml;
+
     internal sealed class ExceptionToXmlLight
     {
         public const string Magic = @"7363b2b6-335d-4a3f-8933-9c1e906baf29";

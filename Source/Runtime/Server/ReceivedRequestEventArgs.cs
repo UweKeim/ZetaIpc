@@ -1,6 +1,9 @@
-namespace ZetaIpc.Runtime.Server
+﻿namespace ZetaIpc.Runtime.Server
 {
-    public class ReceivedRequestEventArgs
+    using System;
+
+    public class ReceivedRequestEventArgs :
+        EventArgs
     {
         public string Request { get; }
         public string Response { get; set; }
@@ -9,6 +12,6 @@ namespace ZetaIpc.Runtime.Server
         public ReceivedRequestEventArgs(string request)
         {
             Request = request;
-        }   
+        }
     }
 }

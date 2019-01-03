@@ -1,10 +1,10 @@
-using System;
-using System.Collections;
-using System.Reflection;
-using System.Text;
-
-namespace ZetaIpc.Runtime.Helper
+﻿namespace ZetaIpc.Runtime.Helper
 {
+    using System;
+    using System.Collections;
+    using System.Reflection;
+    using System.Text;
+
     /// <summary>
     /// Class that helps in dumping.
     /// </summary>
@@ -59,7 +59,6 @@ namespace ZetaIpc.Runtime.Helper
                     {
                         return;
                     }
-
                     parentRef = parentRef.Parent;
                 }
             }
@@ -90,7 +89,7 @@ namespace ZetaIpc.Runtime.Helper
                 //If value is a char, output value with single quotes around it
                 else if (obj.Value is char)
                 {
-                    sb.AppendFormat(@"'{0}'", escape(new string((char) obj.Value, 1)));
+                    sb.AppendFormat(@"'{0}'", escape(new string((char)obj.Value, 1)));
                 }
                 else
                 {
@@ -169,12 +168,10 @@ namespace ZetaIpc.Runtime.Helper
                                                 sb.Append(e.GetType().Name);
                                                 sb.Append(@")>");
                                             }
-
                                             if (i < props.Length - 1)
                                             {
                                                 sb.Append(',');
                                             }
-
                                             sb.Append(Environment.NewLine);
                                         }
                                     }
@@ -191,7 +188,6 @@ namespace ZetaIpc.Runtime.Helper
                                             {
                                                 sb.Append(',');
                                             }
-
                                             sb.Append(Environment.NewLine);
                                         }
                                     }
@@ -222,7 +218,6 @@ namespace ZetaIpc.Runtime.Helper
             {
                 sb.Replace(EscapeChars[i], EscapeCharReplacements[i]);
             }
-
             return sb.ToString();
         }
 

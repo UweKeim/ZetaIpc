@@ -1,34 +1,39 @@
-using System;
-using System.Diagnostics;
-using System.IO;
-using System.Net;
-using System.Net.Sockets;
-using System.Reflection;
-using System.Text;
-using HttpServer;
-using ZetaIpc.Runtime.Helper;
-
-namespace ZetaIpc.Runtime.Server
+﻿namespace ZetaIpc.Runtime.Server
 {
+    using Helper;
+    using HttpServer;
+    using System;
+    using System.Diagnostics;
+    using System.Net;
+    using System.Net.Sockets;
+    using System.Reflection;
+    using System.Text;
+
+    /// <summary>
+    /// Simple HTTP-based server to receive strings from the IpcClient and send back
+    /// strings in response.
+    /// </summary>
+    // ReSharper disable once InheritdocConsiderUsage
+    // ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
     public class IpcServer :
         IDisposable
     {
         private string _localHost;
-        private HttpServer.HttpServer _server;
+        private HttpServer _server;
 
         static IpcServer()
         {
             AppDomain.CurrentDomain.AssemblyResolve +=
                 (sender, args) =>
                 {
-                    string resourceName =
+                    var resourceName =
                         $@"ZetaIpc.Runtime.EmbeddedResources.{new AssemblyName(args.Name).Name}.dll";
 
-                    using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName))
+                    using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName))
                     {
                         if (stream == null) return null;
 
-                        byte[] assemblyData = new Byte[stream.Length];
+                        var assemblyData = new Byte[stream.Length];
                         stream.Read(assemblyData, 0, assemblyData.Length);
 
                         return Assembly.Load(assemblyData);
@@ -48,10 +53,10 @@ namespace ZetaIpc.Runtime.Server
         {
             if (_server != null) throw new Exception("Server already initialized.");
 
-            Address = GetLocalHost();
+            Address = getLocalHost();
             Port = port <= 0 ? FreePortHelper.GetFreePort() : port;
 
-            _server = new HttpServer.HttpServer(new MyLogWriter());
+            _server = new HttpServer(new MyLogWriter());
 
             _server.ExceptionThrown +=
                 (source, exception) => throw new Exception("Error during server processing.", exception);
@@ -61,7 +66,7 @@ namespace ZetaIpc.Runtime.Server
             _server.Start(IPAddress.Loopback, Port);
 
             Trace.WriteLine(
-                $@"[Web server] Started local web server for URL '{BaseUrl}'.");
+                $@"[Web server] Started local web server for URL '{baseUrl}'.");
         }
 
         /// <summary>
@@ -71,7 +76,7 @@ namespace ZetaIpc.Runtime.Server
         {
             if (_server != null)
             {
-                HttpServer.HttpServer listener = _server;
+                var listener = _server;
                 _server = null;
                 listener.Stop();
             }
@@ -93,10 +98,10 @@ namespace ZetaIpc.Runtime.Server
 
         protected virtual string OnReceivedRequest(string request)
         {
-            EventHandler<ReceivedRequestEventArgs> h = ReceivedRequest;
+            var h = ReceivedRequest;
             if (h != null)
             {
-                ReceivedRequestEventArgs args = new ReceivedRequestEventArgs(request);
+                var args = new ReceivedRequestEventArgs(request);
                 h(this, args);
                 if (args.Handled) return args.Response;
             }
@@ -105,9 +110,9 @@ namespace ZetaIpc.Runtime.Server
             return null;
         }
 
-        private string BaseUrl => $@"http://{Address}:{Port}/";
+        private string baseUrl => $@"http://{Address}:{Port}/";
 
-        private string GetLocalHost()
+        private string getLocalHost()
         {
             // Try to use something without dots, if available.
             // http://serverfault.com/questions/19820/internet-explorer-not-bypassing-proxy-for-local-addresses/19916#19916
@@ -119,10 +124,10 @@ namespace ZetaIpc.Runtime.Server
 
                 try
                 {
-                    IPHostEntry lh = Dns.GetHostEntry(@"localhost");
+                    var lh = Dns.GetHostEntry(@"localhost");
                     if (lh.AddressList.Length > 0)
                     {
-                        foreach (IPAddress address in lh.AddressList)
+                        foreach (var address in lh.AddressList)
                         {
                             if (address.ToString() == @"127.0.0.1")
                             {
@@ -141,7 +146,7 @@ namespace ZetaIpc.Runtime.Server
             return _localHost;
         }
 
-        private static byte[] GetBytesWithBom(string text)
+        private static byte[] getBytesWithBom(string text)
         {
             return Encoding.UTF8.GetBytes(text ?? string.Empty);
         }
@@ -150,7 +155,7 @@ namespace ZetaIpc.Runtime.Server
             IHttpRequest request,
             IHttpResponse response)
         {
-            string requestText = GetText(request);
+            var requestText = getText(request);
             string responseText;
 
             try
@@ -160,7 +165,7 @@ namespace ZetaIpc.Runtime.Server
             catch (Exception x)
             {
                 Trace.TraceError(@"Error during request handling: {0}", x);
-                SendError500(response, x);
+                sendError500(response, x);
                 throw;
             }
 
@@ -177,14 +182,14 @@ namespace ZetaIpc.Runtime.Server
                 response.Status = HttpStatusCode.OK;
             }
 
-            AddNeverCache(response);
+            addNeverCache(response);
 
             if (request.Method != @"Headers" && response.Status != HttpStatusCode.NotModified)
             {
                 Trace.WriteLine(
                     $@"[Web server] Sending text for URL '{request.Uri.AbsolutePath}': '{responseText}'.");
 
-                byte[] buffer2 = GetBytesWithBom(responseText);
+                var buffer2 = getBytesWithBom(responseText);
 
                 response.ContentLength = buffer2.Length;
                 response.SendHeaders();
@@ -200,13 +205,13 @@ namespace ZetaIpc.Runtime.Server
             }
         }
 
-        private static void SendError500(IHttpResponse response, Exception exception)
+        private static void sendError500(IHttpResponse response, Exception exception)
         {
             response.ContentType = @"text/html";
             response.Status = HttpStatusCode.InternalServerError;
 
-            string responseText = MakeError500ResponseText(exception);
-            byte[] buffer2 = GetBytesWithBom(responseText);
+            var responseText = makeError500ResponseText(exception);
+            var buffer2 = getBytesWithBom(responseText);
 
             response.ContentLength = buffer2.Length;
             response.SendHeaders();
@@ -214,18 +219,18 @@ namespace ZetaIpc.Runtime.Server
             response.SendBody(buffer2, 0, buffer2.Length);
         }
 
-        private static string MakeError500ResponseText(Exception exception)
+        private static string makeError500ResponseText(Exception exception)
         {
             return new ExceptionToXmlLight(exception).ToXmlString();
         }
 
-        private static string GetText(IHttpRequest request)
+        private static string getText(IHttpRequest request)
         {
-            byte[] bytes = request.GetBody();
+            var bytes = request.GetBody();
             return bytes == null ? string.Empty : Encoding.UTF8.GetString(bytes);
         }
 
-        private static void AddNeverCache(IHttpResponse response)
+        private static void addNeverCache(IHttpResponse response)
         {
             response.AddHeader(@"Last-modified", new DateTime(2005, 1, 1).ToUniversalTime().ToString(@"r"));
 

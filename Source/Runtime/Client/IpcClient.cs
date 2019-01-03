@@ -1,10 +1,10 @@
-using System.IO;
-using System.Net;
-using System.Text;
-using ZetaIpc.Runtime.Helper;
-
-namespace ZetaIpc.Runtime.Client
+﻿namespace ZetaIpc.Runtime.Client
 {
+    using Helper;
+    using System.IO;
+    using System.Net;
+    using System.Text;
+
     /// <summary>
     /// Simple HTTP-based client to send strings to an IpcServer instance and 
     /// get back strings in response.
@@ -12,13 +12,17 @@ namespace ZetaIpc.Runtime.Client
     public class IpcClient
     {
         private int _port;
+        private int _timeoutMilliSeconds;
 
         /// <summary>
         /// Initialized to connect to an IcpServer running on 127.0.0.1:port.
         /// </summary>
-        public void Initialize(int port)
+        /// <param name="port">The port of the running server to connect to.</param>
+        /// <param name="timeoutMilliSeconds">An optional timeout, if greater zero. Default is 100 seconds (100000 milliseconds). Use for long running tasks.</param>
+        public void Initialize(int port, int timeoutMilliSeconds = 0)
         {
             _port = port;
+            _timeoutMilliSeconds = timeoutMilliSeconds;
         }
 
         /// <summary>
@@ -28,7 +32,7 @@ namespace ZetaIpc.Runtime.Client
         /// </summary>
         public string Send(string request)
         {
-            using (var wc = new MyWebClient())
+            using (var wc = new MyWebClient(_timeoutMilliSeconds))
             {
                 try
                 {

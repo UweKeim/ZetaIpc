@@ -1,18 +1,21 @@
-using System.Diagnostics;
-using HttpServer;
-
-namespace ZetaIpc.Runtime.Server
+﻿namespace ZetaIpc.Runtime.Server
 {
-    public class MyLogWriter : ILogWriter
-    {
-        public void Write(object source, LogPrio priority, string message)
-        {
-            TraceLog(priority.ToString(), message);
-        }
+    using HttpServer;
+    using System.Diagnostics;
 
-        private static void TraceLog(string type, string message)
+    internal class MyLogWriter :
+        ILogWriter
+    {
+        private static void traceLog(
+            string type,
+            string message)
         {
             Trace.WriteLine($@"[Web server, {type}] {message}");
+        }
+
+        public void Write(object source, LogPrio priority, string message)
+        {
+            traceLog(priority.ToString(), message);
         }
     }
 }

@@ -1,11 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.NetworkInformation;
-
-namespace ZetaIpc.Runtime.Helper
+﻿namespace ZetaIpc.Runtime.Helper
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Net.NetworkInformation;
+
     public static class FreePortHelper
     {
         private static readonly Random Random = new Random(Guid.NewGuid().GetHashCode());
@@ -18,8 +17,8 @@ namespace ZetaIpc.Runtime.Helper
         {
             for (var i = 0; i < 10; ++i)
             {
-                int port = Random.Next(9000, 15000);
-                if (IsPortFree(port))
+                var port = Random.Next(9000, 15000);
+                if (isPortFree(port))
                 {
                     ReservedPorts.Add(port);
                     return port;
@@ -29,7 +28,7 @@ namespace ZetaIpc.Runtime.Helper
             throw new Exception("Unable to acquire free port.");
         }
 
-        private static bool IsPortFree(int port)
+        private static bool isPortFree(int port)
         {
             if (ReservedPorts.Contains(port))
             {
@@ -39,10 +38,10 @@ namespace ZetaIpc.Runtime.Helper
             {
                 // http://stackoverflow.com/a/570126/107625
 
-                IPGlobalProperties globalProperties = IPGlobalProperties.GetIPGlobalProperties();
-                IPEndPoint[] ipEndPoints = globalProperties.GetActiveTcpListeners();
+                var globalProperties = IPGlobalProperties.GetIPGlobalProperties();
+                var informations = globalProperties.GetActiveTcpListeners();
 
-                return ipEndPoints.All(information => information.Port != port);
+                return informations.All(information => information.Port != port);
             }
         }
     }
