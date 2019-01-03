@@ -12,7 +12,6 @@
     public class IpcClient
     {
         private int _port;
-        private int _timeoutMilliSeconds;
 
         /// <summary>
         /// Initialized to connect to an IcpServer running on 127.0.0.1:port.
@@ -22,7 +21,7 @@
         public void Initialize(int port, int timeoutMilliSeconds = 0)
         {
             _port = port;
-            _timeoutMilliSeconds = timeoutMilliSeconds;
+            TimeoutMilliSeconds = timeoutMilliSeconds;
         }
 
         /// <summary>
@@ -32,7 +31,7 @@
         /// </summary>
         public string Send(string request)
         {
-            using (var wc = new MyWebClient(_timeoutMilliSeconds))
+            using (var wc = new MyWebClient(TimeoutMilliSeconds))
             {
                 try
                 {
@@ -71,5 +70,11 @@
         }
 
         private string url => $@"http://127.0.0.1:{_port}";
+
+        /// <summary>
+        /// Dynamically get or set a timeout for calling the server.
+        /// A value of zero indicates the default timeout of 100 seconds (100000 milliseconds).
+        /// </summary>
+        public int TimeoutMilliSeconds { get; set; }
     }
 }
