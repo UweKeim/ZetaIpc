@@ -4,9 +4,11 @@
 
 .svn/
 .vs/
+.vs/*/*
 Deploy/
 
 Source/.vs/
+Source/.vs/*/*
 Source/packages/
 Source/NuGet.exe
 
