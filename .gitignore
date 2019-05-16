@@ -3,7 +3,14 @@
 #################
 
 .svn/
+.vs/
+.vs/*/*
 Deploy/
+
+Source/.vs/
+Source/.vs/*/*
+Source/packages/
+Source/NuGet.exe
 
 Bin/HttpServer.dll
 Source/TestClient/Bin/
@@ -224,3 +231,9 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
+Source/.vs/ZetaIpc/v15/Server/sqlite3/storage.ide
+Source/.vs/ZetaIpc/v15/Server/sqlite3/storage.ide-shm
+Source/.vs/ZetaIpc/v15/Server/sqlite3/storage.ide-wal
+Source/.vs/ZetaIpc/v15/Server/sqlite3/storage.ide-wal
+Source/.vs/ZetaIpc/v15/Server/sqlite3/storage.ide-wal
+Source/.vs/ZetaIpc/v15/Server/sqlite3/storage.ide-wal

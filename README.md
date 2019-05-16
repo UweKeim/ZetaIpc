@@ -2,7 +2,7 @@
 
 A tiny .NET library to do inter-process communication (IPC) between different processes on the same machine.
 
-<!--[![Build state](https://travis-ci.org/UweKeim/ZetaIpc.svg?branch=master)](https://travis-ci.org/UweKeim/ZetaIpc "Travis CI build status")-->
+[![Build state](https://travis-ci.org/UweKeim/ZetaIpc.svg?branch=master)](https://travis-ci.org/UweKeim/ZetaIpc "Travis CI build status")
 
 ## NuGet
 
@@ -14,9 +14,8 @@ First trying [ZeroMQ](https://github.com/zeromq/netmq) to do some very small IPC
 bother to dig deeper. Instead I used the phantastic [C# WebServer project](https://webserver.codeplex.com/) and quickly
 assembled some small wrapper.
 
-I intentionally implemented simple string send and receive methods, everything else is out of scope of
-the library. E.g. you could use [Json.NET](http://james.newtonking.com/json) to transfer JSON within the strings between the client and the
-server.
+I intentionally implemented only simple string send and receive methods, everything else is out of scope of
+the library. E.g. you could use [Json.NET](http://james.newtonking.com/json) to transfer JSON within the strings between the client and the server.
 
 ## Using the server
 

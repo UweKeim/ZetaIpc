@@ -1,30 +1,33 @@
-﻿using System;
-using System.Threading;
-using ZetaIpc.Runtime.Server;
-
-namespace TestServer
+﻿namespace TestServer
 {
-    class Program
+    using System;
+    using System.Threading;
+    using ZetaIpc.Runtime.Server;
+
+    internal static class Program
     {
-        static void Main(string[] args)
+        private static void Main()
         {
-            IpcServer server = new IpcServer();
-            server.Start(12345);
+            var s = new IpcServer();
+            s.Start(12345);
 
-            Console.WriteLine("Started server");
-            
-            server.ReceivedRequest += ServerOnReceivedRequest;
-            
-            Thread.Sleep(1000);
-            
-            server.Stop();
-        }
+            Console.WriteLine("Started server.");
 
-        private static void ServerOnReceivedRequest(object sender, ReceivedRequestEventArgs e)
-        {
-            Console.WriteLine($"Received: {e.Request}");
-            e.Response = $"Super: {e.Request}";
-            e.Handled = true;
+            s.ReceivedRequest += (sender, args) =>
+            {
+                Console.WriteLine("Received: " + args.Request);
+                args.Response = "Super: " + args.Request;
+                args.Handled = true;
+
+                //throw new Exception("Test");
+            };
+
+            while (true)
+            {
+                Thread.Sleep(1000);
+            }
+
+            s.Stop();
         }
     }
 }

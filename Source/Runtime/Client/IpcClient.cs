@@ -16,9 +16,12 @@ namespace ZetaIpc.Runtime.Client
         /// <summary>
         /// Initialized to connect to an IcpServer running on 127.0.0.1:port.
         /// </summary>
-        public void Initialize(int port)
+        /// <param name="port">The port of the running server to connect to.</param>
+        /// <param name="timeoutMilliSeconds">An optional timeout, if greater zero. Default is 100 seconds (100000 milliseconds). Use for long running tasks.</param>
+        public void Initialize(int port, int timeoutMilliSeconds = 0)
         {
             _port = port;
+            TimeoutMilliSeconds = timeoutMilliSeconds;
         }
 
         /// <summary>
@@ -28,7 +31,7 @@ namespace ZetaIpc.Runtime.Client
         /// </summary>
         public string Send(string request)
         {
-            using (var wc = new MyWebClient())
+            using (var wc = new MyWebClient(TimeoutMilliSeconds))
             {
                 try
                 {
@@ -67,5 +70,11 @@ namespace ZetaIpc.Runtime.Client
         }
 
         private string url => $@"http://127.0.0.1:{_port}";
+
+        /// <summary>
+        /// Dynamically get or set a timeout for calling the server.
+        /// A value of zero indicates the default timeout of 100 seconds (100000 milliseconds).
+        /// </summary>
+        public int TimeoutMilliSeconds { get; set; }
     }
 }
