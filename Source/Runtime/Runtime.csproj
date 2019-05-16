@@ -5,12 +5,26 @@
         <SignAssembly>true</SignAssembly>
         <AssemblyOriginatorKeyFile>ZetaIpc.snk</AssemblyOriginatorKeyFile>
         <DelaySign>false</DelaySign>
+        <Version>1.0.0.8</Version>
+        <AssemblyVersion>1.0.0.8</AssemblyVersion>
+        <Copyright>© 2014-2019 https://www.zeta-software.de</Copyright>
+        <Product>ZetaIpc</Product>
+        <Company>Zeta Software GmbH</Company>
+        <Authors>UweKeim, maksim789456</Authors>
+        <Description>Simple, HTTP-based inter-process communication (IPC) on the same machine.</Description>
+        <PackageId>Zeta IPC</PackageId>
+        <AssemblyName>ZetaIpc</AssemblyName>
+        <RootNamespace>ZetaIpc.Runtime</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
       <Reference Include="HttpServer, Version=1.1.0.0, Culture=neutral, PublicKeyToken=a96f302995d63e21">
-        <HintPath>References\HttpServer.dll</HintPath>
+        <HintPath>..\References\HttpServer.dll</HintPath>
       </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Properties\" />
     </ItemGroup>
 
 </Project>

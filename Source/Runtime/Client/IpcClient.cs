@@ -31,7 +31,7 @@ namespace ZetaIpc.Runtime.Client
         /// </summary>
         public string Send(string request)
         {
-            using (var wc = new MyWebClient(TimeoutMilliSeconds))
+            using (MyWebClient wc = new MyWebClient(TimeoutMilliSeconds))
             {
                 try
                 {
@@ -47,13 +47,13 @@ namespace ZetaIpc.Runtime.Client
                         if (x.Response is HttpWebResponse response &&
                             response.StatusCode == HttpStatusCode.InternalServerError)
                         {
-                            using (var stream = response.GetResponseStream())
+                            using (Stream stream = response.GetResponseStream())
                             {
                                 if (stream != null)
                                 {
-                                    using (var reader = new StreamReader(stream, Encoding.UTF8))
+                                    using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
                                     {
-                                        var resp = reader.ReadToEnd();
+                                        string resp = reader.ReadToEnd();
                                         if (ExceptionFromXmlLight.IsSerializedException(resp))
                                         {
                                             throw new IpcClientException(new ExceptionFromXmlLight(resp), x);

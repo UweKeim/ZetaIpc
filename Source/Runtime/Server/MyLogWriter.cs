@@ -1,4 +1,4 @@
-namespace ZetaIpc.Runtime.Server
+﻿namespace ZetaIpc.Runtime.Server
 {
     using HttpServer;
     using System.Diagnostics;

@@ -1,25 +1,20 @@
-﻿namespace TestClient
+﻿using System;
+using ZetaIpc.Runtime.Client;
+
+namespace TestClient
 {
-    using System;
-    using System.Threading;
-    using ZetaIpc.Runtime.Client;
-
-    internal static class Program
+  class Program
+  {
+    static void Main(string[] args)
     {
-        private static void Main()
-        {
-            var c = new IpcClient();
-            c.Initialize(12345);
+      IpcClient client = new IpcClient();
+      client.Initialize(12345);
 
-            Console.WriteLine("Started client.");
+      Console.WriteLine("Started client");
 
-            var rep = c.Send("Hello");
-            Console.WriteLine("Received: " + rep);
-
-            while (true)
-            {
-                Thread.Sleep(1000);
-            }
-        }
+      string rep = client.Send("Hello");
+      Console.WriteLine($"Received: {rep}");
+      Console.ReadLine();
     }
+  }
 }
