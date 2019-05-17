@@ -2,7 +2,7 @@
 
 A tiny .NET library to do inter-process communication (IPC) between different processes on the same machine.
 
-[![Build state](https://travis-ci.org/UweKeim/ZetaIpc.svg?branch=master)](https://travis-ci.org/UweKeim/ZetaIpc "Travis CI build status")
+<!--[![Build state](https://travis-ci.org/UweKeim/ZetaIpc.svg?branch=master)](https://travis-ci.org/UweKeim/ZetaIpc "Travis CI build status")-->
 
 ## NuGet
 
@@ -14,44 +14,45 @@ First trying [ZeroMQ](https://github.com/zeromq/netmq) to do some very small IPC
 bother to dig deeper. Instead I used the phantastic [C# WebServer project](https://webserver.codeplex.com/) and quickly
 assembled some small wrapper.
 
-I intentionally implemented only simple string send and receive methods, everything else is out of scope of
-the library. E.g. you could use [Json.NET](http://james.newtonking.com/json) to transfer JSON within the strings between the client and the server.
+I intentionally implemented simple string send and receive methods, everything else is out of scope of
+the library. E.g. you could use [Json.NET](http://james.newtonking.com/json) to transfer JSON within the strings between the client and the
+server.
 
 ## Using the server
 
 To use the server (i.e. the "thing" that listens for incoming request and answers them), do something like:
+```cs
+var s = new IpcServer();
+s.Start(12345); // Passing no port selects a free port automatically.
 
-    var s = new IpcServer();
-    s.Start(12345); // Passing no port selects a free port automatically.
+Console.WriteLine("Started server on port {0}.", s.Port);
 
-    Console.WriteLine("Started server on port {0}.", s.Port);
-
-    s.ReceivedRequest += (sender, args) =>
-    {
-        args.Response = "I've got: " + args.Request;
-        args.Handled = true;
-    };
-
+s.ReceivedRequest += (sender, args) =>
+{
+    args.Response = "I've got: " + args.Request;
+    args.Handled = true;
+};
+```
 This starts a new background thread and continues execution.
 
 Later, simply call
-
-    s.Stop();
-
+```cs
+s.Stop();
+```
 to stop the server again.
 
 ## Using the client
 
 To use the client (i.e. the "thing" that can send texts to the server), do something like:
+```cs
+var c = new IpcClient();
+c.Initialize(12345);
 
-    var c = new IpcClient();
-    c.Initialize(12345);
+Console.WriteLine("Started client.");
 
-    Console.WriteLine("Started client.");
-
-    var rep = c.Send("Hello");
-    Console.WriteLine("Received: " + rep);
-
+var rep = c.Send("Hello");
+Console.WriteLine("Received: " + rep);
+```
 ## Bi-directional usage
 
 If you want a bi-directional communication between the server and client that can be started
