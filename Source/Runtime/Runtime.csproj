@@ -1,85 +1,48 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\Microsoft.Net.Compilers.2.10.0\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.2.10.0\build\Microsoft.Net.Compilers.props')" />
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7B84D317-9D25-4F06-9BAC-A246ED79B076}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ZetaIpc.Runtime</RootNamespace>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>ZetaIpc</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>..\..\Bin\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup>
+    <RootNamespace>ZetaIpc.Runtime</RootNamespace>
     <SignAssembly>true</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup>
     <AssemblyOriginatorKeyFile>ZetaIpc.snk</AssemblyOriginatorKeyFile>
+    <Version>1.0.0.9</Version>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageProjectUrl>https://github.com/UweKeim/ZetaIpc</PackageProjectUrl>
+    <PackageIconUrl>http://i.imgur.com/bVld2Qv.png</PackageIconUrl>
+    <Company>Zeta Software GmbH</Company>
+    <Authors>Uwe Keim</Authors>
+    <Product>Zeta IPC</Product>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <Description>A tiny .NET library to do inter-process communication (IPC) between different processes on the same machine.</Description>
+    <PackageTags>ipc, process, http</PackageTags>
+    <RepositoryUrl>https://github.com/UweKeim/ZetaIpc</RepositoryUrl>
   </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>..\..\Bin\</OutputPath>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Update="Client\MyWebClient.cs">
+      <SubType>Component</SubType>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="EmbeddedResources\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="..\References\HttpServer.dll" Link="EmbeddedResources\HttpServer.dll" />
+  </ItemGroup>
+
   <ItemGroup>
     <Reference Include="HttpServer">
       <HintPath>..\References\HttpServer.dll</HintPath>
-      <Private>False</Private>
+      <Private>false</Private>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Client\IpcClient.cs" />
-    <Compile Include="Client\IpcClientException.cs" />
-    <Compile Include="Client\MyWebClient.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Helper\DumpBuilder.cs" />
-    <Compile Include="Helper\ExceptionFromXmlLight.cs" />
-    <Compile Include="Helper\ExceptionToXmlLight.cs" />
-    <Compile Include="Helper\FreePortHelper.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Server\IpcServer.cs" />
-    <Compile Include="Server\MyFormDecoder.cs" />
-    <Compile Include="Server\MyLogWriter.cs" />
-    <Compile Include="Server\MyModule.cs" />
-    <Compile Include="Server\ReceivedRequestEventArgs.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="..\References\HttpServer.dll">
-      <Link>EmbeddedResources\HttpServer.dll</Link>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-    <None Include="ZetaIpc.snk" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105.The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.2.10.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.2.10.0\build\Microsoft.Net.Compilers.props'))" />
-  </Target>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>

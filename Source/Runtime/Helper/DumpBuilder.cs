@@ -87,9 +87,9 @@
                     sb.AppendFormat(@"""{0}""", escape(s));
                 }
                 //If value is a char, output value with single quotes around it
-                else if (obj.Value is char)
+                else if (obj.Value is char objValue)
                 {
-                    sb.AppendFormat(@"'{0}'", escape(new string((char)obj.Value, 1)));
+                    sb.AppendFormat(@"'{0}'", escape(new string(objValue, 1)));
                 }
                 else
                 {

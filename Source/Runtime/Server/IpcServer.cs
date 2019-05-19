@@ -29,7 +29,8 @@
                     var resourceName =
                         $@"ZetaIpc.Runtime.EmbeddedResources.{new AssemblyName(args.Name).Name}.dll";
 
-                    using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName))
+                    using (var stream = typeof(IpcServer).Assembly.GetManifestResourceStream(resourceName))
+                    //using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName))
                     {
                         if (stream == null) return null;
 

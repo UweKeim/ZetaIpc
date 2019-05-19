@@ -17,7 +17,8 @@
         /// Initialized to connect to an IcpServer running on 127.0.0.1:port.
         /// </summary>
         /// <param name="port">The port of the running server to connect to.</param>
-        /// <param name="timeoutMilliSeconds">An optional timeout, if greater zero. Default is 100 seconds (100000 milliseconds). Use for long running tasks.</param>
+        /// <param name="timeoutMilliSeconds">An optional timeout, if greater zero.
+        /// Default is 100 seconds (100000 milliseconds). Use for long running tasks.</param>
         public void Initialize(int port, int timeoutMilliSeconds = 0)
         {
             _port = port;

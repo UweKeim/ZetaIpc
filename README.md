@@ -22,22 +22,26 @@ server.
 
 To use the server (i.e. the "thing" that listens for incoming request and answers them), do something like:
 
-    var s = new IpcServer();
-    s.Start(12345); // Passing no port selects a free port automatically.
+```cs
+var s = new IpcServer();
+s.Start(12345); // Passing no port selects a free port automatically.
 
-    Console.WriteLine("Started server on port {0}.", s.Port);
+Console.WriteLine("Started server on port {0}.", s.Port);
 
-    s.ReceivedRequest += (sender, args) =>
-    {
-        args.Response = "I've got: " + args.Request;
-        args.Handled = true;
-    };
+s.ReceivedRequest += (sender, args) =>
+{
+    args.Response = "I've got: " + args.Request;
+    args.Handled = true;
+};
+```
 
 This starts a new background thread and continues execution.
 
 Later, simply call
 
-    s.Stop();
+```cs
+s.Stop();
+```
 
 to stop the server again.
 
@@ -45,13 +49,15 @@ to stop the server again.
 
 To use the client (i.e. the "thing" that can send texts to the server), do something like:
 
-    var c = new IpcClient();
-    c.Initialize(12345);
+```cs
+var c = new IpcClient();
+c.Initialize(12345);
 
-    Console.WriteLine("Started client.");
+Console.WriteLine("Started client.");
 
-    var rep = c.Send("Hello");
-    Console.WriteLine("Received: " + rep);
+var rep = c.Send("Hello");
+Console.WriteLine("Received: " + rep);
+```
 
 ## Bi-directional usage
 

@@ -4,6 +4,9 @@
     using System.Threading;
     using ZetaIpc.Runtime.Server;
 
+    /// <summary>
+    /// The server is the "thing" that listens for incoming request and answers them.
+    /// </summary>
     internal static class Program
     {
         private static void Main()
@@ -18,8 +21,6 @@
                 Console.WriteLine("Received: " + args.Request);
                 args.Response = "Super: " + args.Request;
                 args.Handled = true;
-
-                //throw new Exception("Test");
             };
 
             while (true)

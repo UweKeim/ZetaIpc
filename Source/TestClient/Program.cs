@@ -4,6 +4,9 @@
     using System.Threading;
     using ZetaIpc.Runtime.Client;
 
+    /// <summary>
+    /// The client is the "thing" that can send texts to the server.
+    /// </summary>
     internal static class Program
     {
         private static void Main()
