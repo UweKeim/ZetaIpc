@@ -11,6 +11,7 @@
         public MyWebClient(int timeoutMilliSeconds)
         {
             _timeoutMilliSeconds = timeoutMilliSeconds;
+            this.Encoding = System.Text.Encoding.UTF8;
         }
 
         protected override WebRequest GetWebRequest(Uri address)
