@@ -2,8 +2,6 @@
 
 A tiny .NET library to do inter-process communication (IPC) between different processes on the same machine.
 
-[![Build state](https://travis-ci.org/UweKeim/ZetaIpc.svg?branch=master)](https://travis-ci.org/UweKeim/ZetaIpc "Travis CI build status")
-
 ## NuGet
 
 Get the [`ZetaIpc` NuGet package](https://www.nuget.org/packages/ZetaIpc).
