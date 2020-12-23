@@ -24,21 +24,18 @@
         static IpcServer()
         {
             AppDomain.CurrentDomain.AssemblyResolve +=
-                (sender, args) =>
+                (_, args) =>
                 {
                     var resourceName =
                         $@"ZetaIpc.Runtime.EmbeddedResources.{new AssemblyName(args.Name).Name}.dll";
 
-                    using (var stream = typeof(IpcServer).Assembly.GetManifestResourceStream(resourceName))
-                    //using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName))
-                    {
-                        if (stream == null) return null;
+                    using var stream = typeof(IpcServer).Assembly.GetManifestResourceStream(resourceName);
+                    if (stream == null) return null;
 
-                        var assemblyData = new Byte[stream.Length];
-                        stream.Read(assemblyData, 0, assemblyData.Length);
+                    var assemblyData = new Byte[stream.Length];
+                    stream.Read(assemblyData, 0, assemblyData.Length);
 
-                        return Assembly.Load(assemblyData);
-                    }
+                    return Assembly.Load(assemblyData);
                 };
         }
 
@@ -60,7 +57,7 @@
             _server = new HttpServer(new MyLogWriter());
 
             _server.ExceptionThrown +=
-                (source, exception) => throw new Exception("Error during server processing.", exception);
+                (_, exception) => throw new Exception("Error during server processing.", exception);
 
             _server.FormDecoderProviders.Add(new MyFormDecoder());
             _server.Add(new MyModule(this));
@@ -173,9 +170,9 @@
             sendReply(request, response, responseText);
         }
 
-        private void sendReply(IHttpRequest request, IHttpResponse response, string responseText)
+        private static void sendReply(IHttpRequest request, IHttpResponse response, string responseText)
         {
-            responseText = responseText ?? string.Empty;
+            responseText ??= string.Empty;
             response.ContentType = @"text/html";
 
             if (!string.IsNullOrEmpty(request.Headers[@"if-Modified-Since"]))

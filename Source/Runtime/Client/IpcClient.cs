@@ -19,10 +19,12 @@
         /// <param name="port">The port of the running server to connect to.</param>
         /// <param name="timeoutMilliSeconds">An optional timeout, if greater zero.
         /// Default is 100 seconds (100000 milliseconds). Use for long running tasks.</param>
-        public void Initialize(int port, int timeoutMilliSeconds = 0)
+        /// <param name="encoding">Optional encoding for communicating with the server.</param>
+        public void Initialize(int port, int timeoutMilliSeconds = 0, Encoding encoding = null)
         {
             _port = port;
             TimeoutMilliSeconds = timeoutMilliSeconds;
+            Encoding = encoding;
         }
 
         /// <summary>
@@ -32,41 +34,34 @@
         /// </summary>
         public string Send(string request)
         {
-            using (var wc = new MyWebClient(TimeoutMilliSeconds))
+            using var wc = new MyWebClient(TimeoutMilliSeconds, Encoding);
+            try
             {
-                try
-                {
-                    return wc.UploadString(url, @"POST", request ?? string.Empty);
-                }
-                catch (WebException x)
-                {
-                    // Try to give user more details (which might have been
-                    // marshalled from the server).
+                return wc.UploadString(url, @"POST", request ?? string.Empty);
+            }
+            catch (WebException x)
+            {
+                // Try to give user more details (which might have been
+                // marshalled from the server).
 
-                    if (x.Status == WebExceptionStatus.ProtocolError)
+                if (x.Status == WebExceptionStatus.ProtocolError)
+                {
+                    if (x.Response is HttpWebResponse {StatusCode: HttpStatusCode.InternalServerError} response)
                     {
-                        if (x.Response is HttpWebResponse response &&
-                            response.StatusCode == HttpStatusCode.InternalServerError)
+                        using var stream = response.GetResponseStream();
+                        if (stream != null)
                         {
-                            using (var stream = response.GetResponseStream())
+                            using var reader = new StreamReader(stream, Encoding.UTF8);
+                            var resp = reader.ReadToEnd();
+                            if (ExceptionFromXmlLight.IsSerializedException(resp))
                             {
-                                if (stream != null)
-                                {
-                                    using (var reader = new StreamReader(stream, Encoding.UTF8))
-                                    {
-                                        var resp = reader.ReadToEnd();
-                                        if (ExceptionFromXmlLight.IsSerializedException(resp))
-                                        {
-                                            throw new IpcClientException(new ExceptionFromXmlLight(resp), x);
-                                        }
-                                    }
-                                }
+                                throw new IpcClientException(new ExceptionFromXmlLight(resp), x);
                             }
                         }
                     }
-
-                    throw;
                 }
+
+                throw;
             }
         }
 
@@ -77,5 +72,10 @@
         /// A value of zero indicates the default timeout of 100 seconds (100000 milliseconds).
         /// </summary>
         public int TimeoutMilliSeconds { get; set; }
+        
+        /// <summary>
+        /// Optional encoding. UTF-8 if none specified.
+        /// </summary>
+        public Encoding Encoding { get; set; }
     }
 }

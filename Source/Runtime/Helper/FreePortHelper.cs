@@ -10,12 +10,10 @@ namespace ZetaIpc.Runtime.Helper
         /// </summary>
         public static int GetFreePort()
         {
-            using (var sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
-            {
-                sock.Bind(new IPEndPoint(IPAddress.Loopback, 0));
+            using var sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            sock.Bind(new IPEndPoint(IPAddress.Loopback, 0));
 
-                return ((IPEndPoint) sock.LocalEndPoint).Port;
-            }
+            return ((IPEndPoint) sock.LocalEndPoint).Port;
         }
     }
 }
