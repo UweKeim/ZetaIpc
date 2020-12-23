@@ -2,16 +2,17 @@
 {
     using System;
     using System.Net;
+    using System.Text;
 
-    internal class MyWebClient :
+    internal sealed class MyWebClient :
         WebClient
     {
         private readonly int _timeoutMilliSeconds;
 
-        public MyWebClient(int timeoutMilliSeconds)
+        public MyWebClient(int timeoutMilliSeconds, Encoding encoding = null)
         {
             _timeoutMilliSeconds = timeoutMilliSeconds;
-            this.Encoding = System.Text.Encoding.UTF8;
+            Encoding = encoding ?? Encoding.UTF8;
         }
 
         protected override WebRequest GetWebRequest(Uri address)
