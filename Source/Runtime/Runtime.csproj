@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\packages\Microsoft.Net.Compilers.3.8.0\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.3.8.0\build\Microsoft.Net.Compilers.props')" />
+  <Import Project="..\packages\Microsoft.Net.Compilers.3.9.0\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.3.9.0\build\Microsoft.Net.Compilers.props')" />
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>ZetaIpc</AssemblyName>
@@ -9,7 +9,8 @@
     <Version>1.0.0.11</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageProjectUrl>https://github.com/UweKeim/ZetaIpc</PackageProjectUrl>
-    <PackageIconUrl></PackageIconUrl>
+    <PackageIconUrl>
+    </PackageIconUrl>
     <Company>Zeta Software GmbH</Company>
     <Authors>Uwe Keim</Authors>
     <Product>Zeta IPC</Product>
@@ -18,7 +19,8 @@
     <PackageTags>ipc, process, http</PackageTags>
     <RepositoryUrl>https://github.com/UweKeim/ZetaIpc</RepositoryUrl>
     <PackageIcon>ipc.png</PackageIcon>
-    <PackageLicenseFile></PackageLicenseFile>
+    <PackageLicenseFile>
+    </PackageLicenseFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <OutputPath>..\..\Bin\</OutputPath>
@@ -30,7 +32,8 @@
     <None Remove="ipc.ico" />
     <None Include="ipc.png">
       <Pack>True</Pack>
-      <PackagePath></PackagePath>
+      <PackagePath>
+      </PackagePath>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -54,6 +57,6 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105.The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.3.8.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.3.8.0\build\Microsoft.Net.Compilers.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.3.9.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.3.9.0\build\Microsoft.Net.Compilers.props'))" />
   </Target>
 </Project>

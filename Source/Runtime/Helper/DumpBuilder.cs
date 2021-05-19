@@ -117,8 +117,7 @@
                     //interconnected type info objects
                     else
                     {
-                        var type1 = obj.Value as Type;
-                        if (type1 != null)
+                        if (obj.Value is Type type1)
                         {
                             sb.Append(@"Type: ");
                             sb.Append(type1.FullName);
