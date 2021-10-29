@@ -32,7 +32,7 @@
                     using var stream = typeof(IpcServer).Assembly.GetManifestResourceStream(resourceName);
                     if (stream == null) return null;
 
-                    var assemblyData = new Byte[stream.Length];
+                    var assemblyData = new byte[stream.Length];
                     stream.Read(assemblyData, 0, assemblyData.Length);
 
                     return Assembly.Load(assemblyData);

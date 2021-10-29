@@ -1,12 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\packages\Microsoft.Net.Compilers.3.9.0\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.3.9.0\build\Microsoft.Net.Compilers.props')" />
+  <Import Project="..\packages\Microsoft.Net.Compilers.3.11.0\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.3.11.0\build\Microsoft.Net.Compilers.props')" />
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>ZetaIpc</AssemblyName>
     <RootNamespace>ZetaIpc.Runtime</RootNamespace>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>ZetaIpc.snk</AssemblyOriginatorKeyFile>
-    <Version>1.0.0.11</Version>
+    <Version>1.0.0.12</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageProjectUrl>https://github.com/UweKeim/ZetaIpc</PackageProjectUrl>
     <PackageIconUrl>
@@ -16,11 +16,12 @@
     <Product>Zeta IPC</Product>
     <NeutralLanguage>en-US</NeutralLanguage>
     <Description>A tiny .NET library to do inter-process communication (IPC) between different processes on the same machine.</Description>
-    <PackageTags>ipc, process, http</PackageTags>
+    <PackageTags>ipc;process;http</PackageTags>
     <RepositoryUrl>https://github.com/UweKeim/ZetaIpc</RepositoryUrl>
     <PackageIcon>ipc.png</PackageIcon>
     <PackageLicenseFile>
     </PackageLicenseFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <OutputPath>..\..\Bin\</OutputPath>
@@ -30,6 +31,10 @@
     <None Remove="ipc.ico" />
     <None Remove="ipc.ico" />
     <None Remove="ipc.ico" />
+    <None Include="..\..\README.md">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
     <None Include="ipc.png">
       <Pack>True</Pack>
       <PackagePath>
@@ -57,6 +62,6 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105.The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.3.9.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.3.9.0\build\Microsoft.Net.Compilers.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.3.11.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.3.11.0\build\Microsoft.Net.Compilers.props'))" />
   </Target>
 </Project>

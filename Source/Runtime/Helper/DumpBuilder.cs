@@ -50,7 +50,7 @@
             const int maxDepth = 3;
 
             //Ensure that we are not following a circular reference path
-            if (!(obj.Value is ValueType))
+            if (obj.Value is not ValueType)
             {
                 var parentRef = obj.Parent;
                 while (parentRef != null)
@@ -74,134 +74,124 @@
 
             var childIndent = indent + 1;
 
-            //If value is null, output "null"
-            if (obj.Value == null)
+            switch (obj.Value)
             {
-                sb.Append(@"null");
-            }
-            //If value is a string, output value with quotes around it
-            else
-            {
-                if (obj.Value is string s)
-                {
+                //If value is null, output "null"
+                case null:
+                    sb.Append(@"null");
+                    break;
+                case string s:
                     sb.AppendFormat(@"""{0}""", escape(s));
-                }
+                    break;
                 //If value is a char, output value with single quotes around it
-                else if (obj.Value is char objValue)
-                {
+                case char objValue:
                     sb.AppendFormat(@"'{0}'", escape(new string(objValue, 1)));
-                }
-                else
+                    break;
+                case IDictionary value:
                 {
-                    if (obj.Value is IDictionary value)
+                    var list = value;
+                    sb.Append(Environment.NewLine);
+                    sb.Append('\t', indent);
+                    sb.Append(@"[");
+                    sb.Append(Environment.NewLine);
+
+                    foreach (DictionaryEntry entry in list)
                     {
-                        var list = value;
-                        sb.Append(Environment.NewLine);
-                        sb.Append('\t', indent);
-                        sb.Append(@"[");
-                        sb.Append(Environment.NewLine);
-
-                        foreach (DictionaryEntry entry in list)
-                        {
-                            reflect(sb, new GraphRef(obj, entry.Key, null), childIndent, deep, nestingLevel);
-                            sb.Append(@" = ");
-                            reflect(sb, new GraphRef(obj, entry.Value, null), childIndent, deep, nestingLevel);
-                            sb.Append(Environment.NewLine);
-                        }
-
-                        sb.Append('\t', indent);
-                        sb.Append(@"]");
+                        reflect(sb, new GraphRef(obj, entry.Key, null), childIndent, deep, nestingLevel);
+                        sb.Append(@" = ");
+                        reflect(sb, new GraphRef(obj, entry.Value, null), childIndent, deep, nestingLevel);
                         sb.Append(Environment.NewLine);
                     }
-                    //If it's a Type object, we don't want to endlessly follow long trains of 
-                    //interconnected type info objects
-                    else
+
+                    sb.Append('\t', indent);
+                    sb.Append(@"]");
+                    sb.Append(Environment.NewLine);
+                    break;
+                }
+                case Type type1:
+                    sb.Append(@"Type: ");
+                    sb.Append(type1.FullName);
+                    break;
+                //...and similarly for MemberInfo objects
+                default:
+                {
+                    var info = obj.Value as MemberInfo;
+                    if (info != null)
                     {
-                        if (obj.Value is Type type1)
-                        {
-                            sb.Append(@"Type: ");
-                            sb.Append(type1.FullName);
-                        }
-                        //...and similarly for MemberInfo objects
-                        else
-                        {
-                            var info = obj.Value as MemberInfo;
-                            if (info != null)
-                            {
-                                sb.Append(info.GetType().Name);
-                                sb.Append(@": ");
-                                sb.Append(info.Name);
-                            }
-                            //If value is not of a basic datatype
-                            else if (Convert.GetTypeCode(obj.Value) == TypeCode.Object)
-                            {
-                                var type = obj.Value.GetType();
-                                sb.Append(type.Name); //might want to use type.FullName instead.
+                        sb.Append(info.GetType().Name);
+                        sb.Append(@": ");
+                        sb.Append(info.Name);
+                    }
+                    //If value is not of a basic datatype
+                    else if (Convert.GetTypeCode(obj.Value) == TypeCode.Object)
+                    {
+                        var type = obj.Value.GetType();
+                        sb.Append(type.Name); //might want to use type.FullName instead.
 
-                                if (indent <= maxDepth && (deep || nestingLevel == 0))
+                        if (indent <= maxDepth && (deep || nestingLevel == 0))
+                        {
+                            sb.Append(Environment.NewLine);
+                            sb.Append('\t', indent);
+                            sb.Append(@"{");
+                            sb.Append(Environment.NewLine);
+                            //Get all the properties in the object's type
+                            var props = type.GetProperties(
+                                BindingFlags.Public |
+                                BindingFlags.Instance |
+                                BindingFlags.FlattenHierarchy);
+                            //Enumerate all the properties and output their values
+                            for (var i = 0; i < props.Length; i++)
+                            {
+                                var pi = props[i];
+                                if (pi.GetIndexParameters().Length == 0) //Ignore indexers
                                 {
-                                    sb.Append(Environment.NewLine);
-                                    sb.Append('\t', indent);
-                                    sb.Append(@"{");
-                                    sb.Append(Environment.NewLine);
-                                    //Get all the properties in the object's type
-                                    var props = type.GetProperties(
-                                        BindingFlags.Public |
-                                        BindingFlags.Instance |
-                                        BindingFlags.FlattenHierarchy);
-                                    //Enumerate all the properties and output their values
-                                    for (var i = 0; i < props.Length; i++)
+                                    try
                                     {
-                                        var pi = props[i];
-                                        if (pi.GetIndexParameters().Length == 0) //Ignore indexers
-                                        {
-                                            try
-                                            {
-                                                reflect(sb,
-                                                    new GraphRef(obj, pi.GetValue(obj.Value, null),
-                                                        pi.Name), childIndent, deep, nestingLevel + 1);
-                                            }
-                                            catch (Exception e)
-                                            {
-                                                sb.Append(@"<Error getting property value (");
-                                                sb.Append(e.GetType().Name);
-                                                sb.Append(@")>");
-                                            }
-                                            if (i < props.Length - 1)
-                                            {
-                                                sb.Append(',');
-                                            }
-                                            sb.Append(Environment.NewLine);
-                                        }
+                                        reflect(sb,
+                                            new GraphRef(obj, pi.GetValue(obj.Value, null),
+                                                pi.Name), childIndent, deep, nestingLevel + 1);
                                     }
-
-                                    //If IList, output all the values in the list
-                                    if (obj.Value is IList list)
+                                    catch (Exception e)
                                     {
-                                        sb.Append(Environment.NewLine);
-                                        for (var i = 0; i < list.Count; i++)
-                                        {
-                                            reflect(sb, new GraphRef(obj, list[i], null), childIndent, deep,
-                                                nestingLevel + 1);
-                                            if (i < list.Count - 1)
-                                            {
-                                                sb.Append(',');
-                                            }
-                                            sb.Append(Environment.NewLine);
-                                        }
+                                        sb.Append(@"<Error getting property value (");
+                                        sb.Append(e.GetType().Name);
+                                        sb.Append(@")>");
                                     }
-
-                                    sb.Append('\t', indent);
-                                    sb.Append(@"}");
+                                    if (i < props.Length - 1)
+                                    {
+                                        sb.Append(',');
+                                    }
+                                    sb.Append(Environment.NewLine);
                                 }
                             }
-                            //If value is of a basic datatype
-                            else
+
+                            //If IList, output all the values in the list
+                            if (obj.Value is IList list)
                             {
-                                sb.Append(obj.Value);
+                                sb.Append(Environment.NewLine);
+                                for (var i = 0; i < list.Count; i++)
+                                {
+                                    reflect(sb, new GraphRef(obj, list[i], null), childIndent, deep,
+                                        nestingLevel + 1);
+                                    if (i < list.Count - 1)
+                                    {
+                                        sb.Append(',');
+                                    }
+                                    sb.Append(Environment.NewLine);
+                                }
                             }
+
+                            sb.Append('\t', indent);
+                            sb.Append(@"}");
                         }
                     }
+                    //If value is of a basic datatype
+                    else
+                    {
+                        sb.Append(obj.Value);
+                    }
+
+                    break;
                 }
             }
         }
