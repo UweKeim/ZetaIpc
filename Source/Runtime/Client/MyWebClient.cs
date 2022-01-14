@@ -1,32 +1,31 @@
-﻿namespace ZetaIpc.Runtime.Client
+﻿namespace ZetaIpc.Runtime.Client;
+
+using System;
+using System.Net;
+using System.Text;
+
+internal sealed class MyWebClient :
+    WebClient
 {
-    using System;
-    using System.Net;
-    using System.Text;
+    private readonly int _timeoutMilliSeconds;
 
-    internal sealed class MyWebClient :
-        WebClient
+    public MyWebClient(int timeoutMilliSeconds, Encoding encoding = null)
     {
-        private readonly int _timeoutMilliSeconds;
+        _timeoutMilliSeconds = timeoutMilliSeconds;
+        Encoding = encoding ?? Encoding.UTF8;
+    }
 
-        public MyWebClient(int timeoutMilliSeconds, Encoding encoding = null)
-        {
-            _timeoutMilliSeconds = timeoutMilliSeconds;
-            Encoding = encoding ?? Encoding.UTF8;
-        }
+    protected override WebRequest GetWebRequest(Uri address)
+    {
+        // http://stackoverflow.com/questions/896207/c-sharp-get-rid-of-connection-header-in-webclient
 
-        protected override WebRequest GetWebRequest(Uri address)
-        {
-            // http://stackoverflow.com/questions/896207/c-sharp-get-rid-of-connection-header-in-webclient
+        var request = base.GetWebRequest(address);
 
-            var request = base.GetWebRequest(address);
+        if (request is HttpWebRequest r) r.KeepAlive = false;
 
-            if (request is HttpWebRequest r) r.KeepAlive = false;
+        if (request != null && _timeoutMilliSeconds > 0)
+            request.Timeout = _timeoutMilliSeconds;
 
-            if (request != null && _timeoutMilliSeconds > 0)
-                request.Timeout = _timeoutMilliSeconds;
-
-            return request;
-        }
+        return request;
     }
 }
